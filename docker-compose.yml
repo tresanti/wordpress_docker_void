@@ -1,0 +1,66 @@
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: wordpress_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: wp_db
+      MYSQL_USER: wp_user
+      MYSQL_PASSWORD: '12345678'
+      MYSQL_ROOT_PASSWORD: '12345678'
+    volumes:
+      - ./db_data:/var/lib/mysql
+    networks:
+      - wp_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: '12345678'
+    ports:
+      - "8081:80"
+    networks:
+      - wp_network
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025" # Porta SMTP interna a Docker (per PHP)
+      - "8025:8025" # Interfaccia web di MailHog (per te)
+    networks:
+      - wp_network
+    restart: unless-stopped
+
+  wordpress:
+    image: mynginx:latest
+    container_name: wordpress_app
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wp_user
+      WORDPRESS_DB_PASSWORD: '12345678'
+      WORDPRESS_DB_NAME: wp_db
+      WP_ENVIRONMENT_TYPE: development
+      WORDPRESS_DEBUG: true
+      WP_ALLOW_APPLICATION_PASSWORDS: true
+    volumes:
+      - ./wordpress_data:/var/www/html
+    ports:
+      - "8080:80"
+    networks:
+      - wp_network
+
+volumes:
+  db_data:
+  wordpress_data:
+
+networks:
+  wp_network:
+    driver: bridge
+  cheshire_wp_network:
+    external: true

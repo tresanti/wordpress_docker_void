@@ -1,0 +1,11 @@
+Se è la prima volta che  si avvia bisogna costruire l'immagine:
+	docker build . -t mynginx
+
+poi lanciare con:
+	docker compose up
+
+se la cartella WordPress data non esiste verrà creata, così come la cartella db_data
+
+ricordarsi alla fine della lavorazione di lanciare:
+	docker compose down
+altrimenti il servizio la porta ecc restano in esecuzione anche dopo il riavvio del pc 

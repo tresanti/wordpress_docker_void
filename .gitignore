@@ -1,0 +1,4 @@
+# Ignore all files in the db_data directory
+db_data/
+# Ignore all files in the wordpress_data directory
+wordpress_data/
