@@ -1,4 +1,47 @@
-# Ignore all files in the db_data directory
+# Database files (generati da MySQL)
 db_data/
-# Ignore all files in the wordpress_data directory
-wordpress_data/
+
+
+# File di sistema Windows
+Thumbs.db
+Desktop.ini
+*.lnk
+
+# File di sistema macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# File IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node modules (se usi npm nei plugin)
+node_modules/
+
+# Composer (se usi composer nei plugin)
+vendor/
+
+# WordPress cache e uploads
+wordpress_data/wp-content/cache/
+wordpress_data/wp-content/uploads/cache/
+wordpress_data/wp-content/upgrade/
+wordpress_data/wp-content/upgrade-temp-backup/
+
+# WordPress config (contiene password, NON committare)
+# Se vuoi versionare wp-config.php, rimuovi questa riga
+wordpress_data/wp-config.php
+
+# Log files
+*.log
+
+# Backup files
+*.bak
+*.backup
+*.sql
+*.tar.gz
+*.zip
+

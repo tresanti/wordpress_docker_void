@@ -4,6 +4,17 @@
 WORDPRESS_PATH="/var/www/html"
 WP_CONFIG="$WORDPRESS_PATH/wp-config.php"
 
+HOST_UID=${HOST_UID:-1000}
+HOST_GID=${HOST_GID:-1000}
+
+echo "🔧 Configurazione utente www-data per UID:GID = $HOST_UID:$HOST_GID..."
+
+# IMPORTANTE: Modifica www-data PRIMA di fare qualsiasi altra cosa
+deluser www-data 2>/dev/null || true
+delgroup www-data 2>/dev/null || true
+addgroup -g $HOST_GID www-data
+adduser -D -u $HOST_UID -G www-data www-data
+
 # Controlla se la cartella è vuota e scarica WordPress se necessario
 if [ ! -f "$WP_CONFIG" ]; then
     echo "📥 Scaricamento di WordPress..."
@@ -35,19 +46,16 @@ require_once ABSPATH . 'wp-settings.php';
 EOL
     echo "✅ wp-config.php creato."
 
-    # Imposta i permessi
-    echo "🛡️ Impostazione dei permessi..."
-    chown -R www-data:www-data "$WORDPRESS_PATH"
-    chmod -R 755 "$WORDPRESS_PATH"
-    echo "✅ Permessi impostati."
 else
     echo "✅ WordPress già presente, nessun download necessario."
 fi
 
- echo "🛡️ Impostazione dei permessi..."
-    chown -R www-data:www-data "$WORDPRESS_PATH"
-    chmod -R 755 "$WORDPRESS_PATH"
-    echo "✅ Permessi impostati."
+# Imposta i permessi
+echo "🛡️ Impostazione dei permessi..."
+chown -R www-data:www-data "$WORDPRESS_PATH"
+chmod -R 755 "$WORDPRESS_PATH"
+find "$WORDPRESS_PATH" -type f -exec chmod 644 {} \;
+echo "✅ Permessi impostati."
 
 # Avvio di Nginx e PHP-FPM
 echo "🚀 Avvio di Nginx e PHP-FPM..."

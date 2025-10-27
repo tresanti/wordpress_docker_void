@@ -5,13 +5,12 @@ services:
     container_name: wordpress_db
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: wp_db
+      MYSQL_DATABASE: wp_db_controvento
       MYSQL_USER: wp_user
       MYSQL_PASSWORD: '12345678'
       MYSQL_ROOT_PASSWORD: '12345678'
     volumes:
       - ./db_data:/var/lib/mysql
-    command: --lower_case_table_names=2
     networks:
       - wp_network
 
@@ -21,7 +20,6 @@ services:
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: '12345678'
-      UPLOAD_LIMIT: 50M
     ports:
       - "8081:80"
     networks:
@@ -37,16 +35,23 @@ services:
     restart: unless-stopped
 
   wordpress:
-    image: mynginx:latest
+    build:
+      context: .
+      args:
+        HOST_UID: ${HOST_UID:-1000}
+        HOST_GID: ${HOST_GID:-1000}
+      dockerfile: Dockerfile
     container_name: wordpress_app
     restart: unless-stopped
     depends_on:
       - db
     environment:
+      HOST_UID: ${HOST_UID:-1000}
+      HOST_GID: ${HOST_GID:-1000}
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_USER: wp_user
       WORDPRESS_DB_PASSWORD: '12345678'
-      WORDPRESS_DB_NAME: wp_db
+      WORDPRESS_DB_NAME: wp_db_controvento
       WP_ENVIRONMENT_TYPE: development
       WORDPRESS_DEBUG: true
       WP_ALLOW_APPLICATION_PASSWORDS: true

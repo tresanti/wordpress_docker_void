@@ -2,7 +2,7 @@
 FROM php:8.1-fpm-alpine
 
 # Installazione delle dipendenze di sistema
-RUN apk update && apk add --no-cache \
+RUN apk update && apk add --no-cache shadow\
     nginx \
     bash \
     vim \
